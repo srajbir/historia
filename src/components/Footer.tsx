@@ -10,8 +10,8 @@ export default function Footer() {
     const { darkMode, setDarkMode } = useTheme();
 
     return (
-        <footer className=" bg-white/60 dark:bg-[#1f1f1f99] backdrop-blur-md px-4 lg:px-8 py-8 mb-2 shadow rounded w-full">
-            <div className=" mx-auto flex flex-col lg:flex-row justify-between gap-8">
+        <footer className="mt-auto bg-white/60 dark:bg-[#1f1f1f99] backdrop-blur-md px-4 lg:px-8 py-8  shadow rounded w-auto">
+            <div className="mx-auto flex flex-col lg:flex-row justify-between gap-8">
                 {/* Left: Logo and description */}
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 font-bold text-2xl">

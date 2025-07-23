@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { Search, X, Filter as FilterIcon } from 'lucide-react';
 import { allowedCollections as filterOptions } from '@/lib/types';
 
-const Hero_section = () => {
+const Hero_section = (params: {search: boolean; filter: boolean}) => {
   const router = useRouter();
   const path = usePathname();
 
@@ -14,17 +14,32 @@ const Hero_section = () => {
 
   // ─── Filter modal ─────────────────────────────────────────
   const [showFilter, setShowFilter] = useState(false);
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string[]>(filterOptions); // Start with all selected
   const modalRef = useRef<HTMLDivElement | null>(null);
 
-  const toggleFilter = (opt: string) =>
-    setSelected((prev) =>
-      prev.includes(opt) ? prev.filter((o) => o !== opt) : [...prev, opt]
+  // When unchecked, remove from selected
+  const toggleFilter = (opt: string) => {
+    setSelected((prev) => prev.includes(opt) 
+      ? prev.filter((o) => o !== opt) 
+      : [...prev, opt]
     );
+  };
 
   const closeModal = () => setShowFilter(false);
 
   // Close on Escape or clicking outside
+  // Initialize with all filters selected and trigger initial filter event
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent('filter-change', {
+        detail: {
+          searchTerm: searchTerm.trim(),
+          filter: selected,
+        },
+      })
+    );
+  }, []);
+
   useEffect(() => {
     if (!showFilter) return;
 
@@ -69,7 +84,7 @@ const Hero_section = () => {
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <h1 className="text-center text-xl md:text-2xl lg:text-3xl mb-1 font-bold text-white" >EXPLORE&nbsp;&nbsp;HISTORY!</h1>
         {/* {path === '/explore' && (<form */}
-        {1 && (<form
+        {params.search && (<form
           onSubmit={handleSubmit}
           className="border-2 p-1 lg:p-2 flex gap-2 rounded min-w-72 md:min-w-2xl lg:min-w-3xl bg-black/30 text-white"
         >
@@ -100,13 +115,13 @@ const Hero_section = () => {
           </button>
 
           {/* Filter toggle */}
-          <button
+          {params.filter && (<button
             type="button"
             onClick={() => setShowFilter(true)}
             className="bg-black/50 p-1 rounded hover-scale cursor-pointer"
           >
             <FilterIcon size={24} />
-          </button>
+          </button>)}
         </form>)}
       </div>
 
@@ -145,10 +160,10 @@ const Hero_section = () => {
               <div className="flex justify-center gap-2 pt-1">
                 <button
                   type="button"
-                  onClick={() => setSelected([])}
+                  onClick={() => setSelected(filterOptions)} // Select all instead of clearing
                   className="px-3 py-1 bg-[#273a7a] text-white rounded transition-all duration-200 font-medium cursor-pointer hover-scale text-sm md:text-lg hover:bg-[#5a78f0]"
                 >
-                  Clear
+                  Select All
                 </button>
                 <button
                   type="submit"

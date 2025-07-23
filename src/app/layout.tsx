@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import "./globals.css";
 import Footer from "@/components/Footer";
 import { Toaster } from 'sonner';
+import { ScrollToTop } from '@/components/ScrollToTop';
 
 export const metadata: Metadata = {
   title: "Historia",
@@ -20,11 +21,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="flex min-h-screen flex-col">
         <Progressbar />
         <ThemeProvider>
         <Navbar/>
-        {children}
+        <ScrollToTop />
+        <main className="flex-grow">
+          {children}
+        </main>
         <Footer />
         </ThemeProvider>
         <Toaster

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { allowedCollections } from "@/lib/types";
 import { getSingleTopicData } from "@/actions/getCollectionData";
 import { Metadata } from "next";
+import Hero_section from "../../hero_section";
 
 let topicName: string;
 
@@ -28,38 +29,41 @@ export default async function TopicPage({
   topicName = doc.name;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-4xl font-bold mb-4">{doc.name}</h1>
-      {1 && (
-        <div className="relative w-full h-64 mb-6">
-          <Image
-            src={doc.image || '/image.jpg'}
-            alt={doc.name}
-            fill
-            className="object-cover rounded-xl shadow-md"
-          />
+    <>
+      <Hero_section flag={false}/>
+      <div className="p-6 max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold mb-4">{doc.name}</h1>
+        {1 && (
+          <div className="relative w-full h-64 mb-6">
+            <Image
+              src={doc.image || '/image.jpg'}
+              alt={doc.name}
+              fill
+              className="object-cover rounded-xl shadow-md"
+              />
+          </div>
+        )}
+        {doc.description && (
+          <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
+            {doc.description}
+          </p>
+        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-base text-gray-600 dark:text-gray-300">
+          {doc.era && <div><strong>Era:</strong> {doc.era}</div>}
+          {doc.founder && <div><strong>Founder:</strong> {doc.founder}</div>}
+          {doc.dynasty && <div><strong>Dynasty:</strong> {doc.dynasty}</div>}
+          {doc.location && <div><strong>Location:</strong> {doc.location}</div>}
+          {doc.date && <div><strong>Date:</strong> {doc.date}</div>}
+          {doc.role && <div><strong>Role:</strong> {doc.role}</div>}
+          {doc.start_year != null && (
+            <div><strong>Start Year:</strong> {doc.start_year}</div>
+          )}
+          {doc.end_year != null && (
+            <div><strong>End Year:</strong> {doc.end_year}</div>
+          )}
         </div>
-      )}
-      {doc.description && (
-        <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
-          {doc.description}
-        </p>
-      )}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-base text-gray-600 dark:text-gray-300">
-        {doc.era && <div><strong>Era:</strong> {doc.era}</div>}
-        {doc.founder && <div><strong>Founder:</strong> {doc.founder}</div>}
-        {doc.dynasty && <div><strong>Dynasty:</strong> {doc.dynasty}</div>}
-        {doc.location && <div><strong>Location:</strong> {doc.location}</div>}
-        {doc.date && <div><strong>Date:</strong> {doc.date}</div>}
-        {doc.role && <div><strong>Role:</strong> {doc.role}</div>}
-        {doc.start_year != null && (
-          <div><strong>Start Year:</strong> {doc.start_year}</div>
-        )}
-        {doc.end_year != null && (
-          <div><strong>End Year:</strong> {doc.end_year}</div>
-        )}
       </div>
-    </div>
+    </>
   );
 }
 

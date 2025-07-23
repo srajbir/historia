@@ -1,21 +1,30 @@
 'use server';
-import { ObjectId } from 'mongodb';
+
 import { getDb } from '@/lib/mongodb';
 import { slugify } from '@/lib/utils';
 import { Props, allowedCollections, ErrorResult, CardProps } from '@/lib/types';
 
+function isValidCollection(name: string): boolean {
+  return allowedCollections.includes(name);
+}
+
+function escapeRegex(input: string): string {
+  return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Get a single topic by slug
 export async function getSingleTopicData(
   collectionName: string,
   chosenTopic: string
 ): Promise<Props | ErrorResult> {
   try {
-    if (!allowedCollections.includes(collectionName)) {
+    if (!isValidCollection(collectionName)) {
       return { error: 'Unauthorized collection access', status: 403 };
     }
 
     const db = await getDb();
-    const doc = await db.collection(collectionName).findOne({slug : chosenTopic});
-    console.log(doc);
+    const doc = await db.collection(collectionName).findOne({ slug: chosenTopic });
+    console.log(`📄 Fetched topic document:`, doc);
 
     if (!doc) {
       return { error: 'Topic not found', status: 404 };
@@ -38,50 +47,62 @@ export async function getSingleTopicData(
 
     return result;
   } catch (err: any) {
-    console.error(`❌ Failed to fetch topic:`, err);
+    console.error(`❌ [getSingleTopicData] Failed to fetch topic:`, err);
     return { error: 'Internal server error', status: 500 };
   }
 }
 
+// Get cards with optional search
 export async function getScrollerCards(
-  collectionName: string
+  collectionName: string,
+  searchTerm?: string
 ): Promise<CardProps[] | ErrorResult> {
   try {
-    if (!allowedCollections.includes(collectionName)) {
+    if (!isValidCollection(collectionName)) {
       return { error: 'Unauthorized collection access', status: 403 };
     }
 
     const db = await getDb();
+    const query: any = {};
+
+    if (searchTerm) {
+      const safeSearch = escapeRegex(searchTerm);
+      query.$or = [
+        { name: { $regex: safeSearch, $options: 'i' } },
+        { description: { $regex: safeSearch, $options: 'i' } },
+      ];
+    }
 
     const rawData = await db.collection(collectionName)
-      .find({}, {
+      .find(query, {
         projection: {
           name: 1,
           image: 1,
+          slug: 1,
         },
       })
-      .limit(2)
       .toArray();
 
     const data: CardProps[] = rawData.map((doc) => ({
       id: doc._id.toString(),
       name: doc.name,
       image: doc.image || '/image.jpg',
-      slug: slugify(doc.name),
+      slug: doc.slug ?? slugify(doc.name),
     }));
 
     return data;
   } catch (err: any) {
-    console.error(`❌ Failed to fetch from ${collectionName}:`, err);
+    console.error(`❌ [getScrollerCards] Failed to fetch from ${collectionName}:`, err);
     return { error: 'Internal server error', status: 500 };
   }
 }
 
+// Get all cards from a collection
 export async function getAllCards(
   collectionName: string
 ): Promise<CardProps[] | ErrorResult> {
   try {
-    if (!allowedCollections.includes(collectionName)) {
+    if (!isValidCollection(collectionName)) {
       return { error: 'Unauthorized collection access', status: 403 };
     }
 
@@ -92,6 +113,7 @@ export async function getAllCards(
         projection: {
           name: 1,
           image: 1,
+          slug: 1,
         },
       })
       .toArray();
@@ -100,12 +122,12 @@ export async function getAllCards(
       id: doc._id.toString(),
       name: doc.name,
       image: doc.image || '/image.jpg',
-      slug: slugify(doc.name),
+      slug: doc.slug ?? slugify(doc.name),
     }));
 
     return data;
   } catch (err: any) {
-    console.error(`❌ Failed to fetch from ${collectionName}:`, err);
+    console.error(`❌ [getAllCards] Failed to fetch from ${collectionName}:`, err);
     return { error: 'Internal server error', status: 500 };
   }
 }
