@@ -1,7 +1,7 @@
 'use client';
 import { Lightbulb, SendHorizonal } from 'lucide-react';
 import React, { useState, useEffect, useActionState, Dispatch, SetStateAction } from 'react';
-import { saveSuggestion } from '@/app/actions/saveSuggestion';
+import { saveSuggestion } from '@/actions/saveSuggestion';
 import { toast } from 'sonner';
 
 const clearFieldError = (
