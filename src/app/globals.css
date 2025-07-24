@@ -57,10 +57,10 @@ body {
   transition: all 0.2s ease-in-out;
 }
 .hover-scale-low:hover {
-  transform: scale(1.005);
+  transform: scale(1.01);
 }
 .hover-scale-low:active {
-  transform: scale(0.995);
+  transform: scale(0.99);
 }
 
 /* Scrollbar customization */
@@ -77,6 +77,17 @@ body {
 .dark ::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.2);
 }
+
+/* Hide scrollbar but keep scroll functionality */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;    /* Firefox */
+}
+
 
 .btn {
   @apply px-4 py-2 bg-[#273b7a] text-white rounded transition-all duration-200 font-bold cursor-pointer;

@@ -6,7 +6,7 @@ const Card = ({ name, slug, image, collection }: CardProps) => {
   return (
     <Link 
       href={`/explore/${collection}/${slug}`}
-      className="group relative rounded overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white dark:bg-[#1f1f1f] flex flex-col hover-scale-low min-w-[240px]"
+      className="group relative rounded overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white dark:bg-[#1f1f1f] flex flex-col hover-scale-low min-w-[240px] md:min-w-[360px]"
     >
       {/* Image container */}
       <div className="relative w-full h-64">
