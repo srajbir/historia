@@ -4,8 +4,7 @@ import { allowedCollections } from "@/lib/types";
 import { getSingleTopicData } from "@/actions/getCollectionData";
 import { Metadata } from "next";
 import Hero_section from "../../hero_section";
-
-let topicName: string;
+import ExploreScroller from "../../explore_scroller";
 
 export default async function TopicPage({
   params,
@@ -26,7 +25,6 @@ export default async function TopicPage({
   }
 
   const doc = result;
-  topicName = doc.name;
 
   return (
   <>
@@ -109,6 +107,8 @@ export default async function TopicPage({
         )}
       </div>
     </section>
+
+    <ExploreScroller collectionName={collectionName}/>
   </>
 );
 

@@ -53,7 +53,7 @@ export default function SuggestForm() {
     `form-input ${errors[field] ? 'outline outline-2 outline-red-600' : 'outline-none'}`;
 
   return (
-    <section className="space-y-4 rounded shadow py-6 px-1 bg-white/60 dark:bg-[#1f1f1f99]">
+    <section className="space-y-4 rounded shadow py-6 px-1 my-6 bg-white/60 dark:bg-[#1f1f1f99]">
       <div className="lg:max-w-7xl mx-auto">
         <h2 className="flex items-center justify-center gap-2 text-2xl font-bold">
           <Lightbulb className="text-yellow-500" size={24} /> Suggest a Topic

@@ -29,7 +29,7 @@ export default function Footer() {
                         <h4 className="font-semibold text-lg mb-2">Quick Links</h4>
                         <div className="inline-flex flex-col gap-1">
                             <Link href="/" className={`nav-link ${pathname === '/' ? 'active' : ''}`}>Home</Link>
-                            <Link href="/explore" className={`nav-link ${pathname === '/explore' ? 'active' : ''}`}>Explore</Link>
+                            <Link href="/explore" className={`nav-link ${pathname.startsWith('/explore') ? 'active' : ''}`}>Explore</Link>
                             <Link href="/about" className={`nav-link ${pathname === '/about' ? 'active' : ''}`}>About</Link>
                         </div>
                     </div>

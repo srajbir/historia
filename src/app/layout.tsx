@@ -24,12 +24,12 @@ export default function RootLayout({
       <body className="flex min-h-screen flex-col">
         <Progressbar />
         <ThemeProvider>
-        <Navbar/>
-        <ScrollToTop />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+          <Navbar/>
+          <ScrollToTop />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
         </ThemeProvider>
         <Toaster
           position="top-right"
