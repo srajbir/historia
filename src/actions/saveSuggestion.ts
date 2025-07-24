@@ -19,7 +19,7 @@ export async function saveSuggestion( _prevState: ActionState, formData: FormDat
   try {
     await FormValidator.parseAsync(values);
 
-    const db = await getDb();
+    const db = await getDb('w');
     await db.collection('suggestions').insertOne({
       ...values,
       createdAt: new Date(),

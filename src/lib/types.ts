@@ -17,10 +17,11 @@ export type Props = {
 };
 
 export type CardProps = {
-  id: string;
+  id?: string;
   name: string;
   image: string;
   slug: string;
+  collection?: string;
 };
 
 export type ErrorResult = {

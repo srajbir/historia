@@ -1,21 +1,23 @@
 'use client';
 
-import { use } from "react";
 import { getAllCards } from "@/actions/getCollectionData";
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CardProps } from "@/lib/types";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { CardProps, allowedCollections } from "@/lib/types";
+import { useEffect, useState, use } from "react";
 import Hero_section from "../hero_section";
+import Card from "@/components/Card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CollectionPage({ params }: { params: Promise<{ collectionName: string }> }) {
-  const { collectionName } = use(params); // ✅ Future-safe
+  const { collectionName } = use(params);
+
+  if (!allowedCollections.includes(collectionName)) {
+    notFound(); // 🚫 Invalid collection — trigger 404
+  }
 
   const [allData, setAllData] = useState<CardProps[]>([]);
   const [filteredData, setFilteredData] = useState<CardProps[]>([]);
-  const searchParams = useSearchParams();
+  const [loading, setLoading] = useState(true); // ✅ Loading state
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,6 +27,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
       }
       setAllData(data);
       setFilteredData(data);
+      setLoading(false); // ✅ Done loading
     };
     fetchData();
   }, [collectionName]);
@@ -52,35 +55,38 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
 
   const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
+  // ✅ Skeleton Card UI
+  const SkeletonCard = () => (
+    <div className="flex flex-col space-y-2 rounded overflow-hidden shadow bg-white/70 dark:bg-[#2a2a2a] p-4">
+      <Skeleton className="h-48 w-full rounded bg-white/70 dark:bg-[#2a2a2a]" />
+      <Skeleton className="h-4 w-3/4 bg-gray-300 dark:bg-[#494949]" />
+      <Skeleton className="h-4 w-1/2 bg-gray-300 dark:bg-[#494949]" />
+    </div>
+  );
+
   return (
     <>
-      <Hero_section search={true} filter={false}/>
-      <main className="p-4 sm:p-8">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-6">
+      <Hero_section search={true} filter={false} />
+      <main className="p-3 py-8 my-5 shadow bg-white/70 backdrop-blur-md rounded dark:bg-[#1f1f1f99] text-black dark:text-white mx-auto">
+        <h2 className="text-2xl lg:text-3xl font-bold mb-8 text-center">
           Explore All {capitalize(collectionName)}
-        </h1>
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {filteredData.length > 0 ? (
-            filteredData.map((item: CardProps, index: number) => (
-              <Link
-                href={`/explore/${collectionName}/${item.slug}`}
+        </h2>
+
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
+          {loading ? (
+            // 🌀 Show 6 skeletons
+            Array.from({ length: 6 }).map((_, index) => (
+              <SkeletonCard key={index} />
+            ))
+          ) : filteredData.length > 0 ? (
+            filteredData.map((item, index) => (
+              <Card
                 key={index}
-                className="group rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300"
-              >
-                <div className="relative w-full h-64">
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="p-4 bg-white dark:bg-black/40">
-                  <h2 className="text-lg font-semibold text-gray-800 dark:text-white group-hover:underline">
-                    {item.name}
-                  </h2>
-                </div>
-              </Link>
+                image={item.image}
+                name={item.name}
+                slug={item.slug}
+                collection={collectionName}
+              />
             ))
           ) : (
             <div className="col-span-full text-center py-10">

@@ -1,16 +1,17 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Search, X, Filter as FilterIcon } from 'lucide-react';
 import { allowedCollections as filterOptions } from '@/lib/types';
 
-const Hero_section = (params: {search: boolean; filter: boolean}) => {
+const Hero_section = (params: {search: boolean; filter?: boolean}) => {
   const router = useRouter();
-  const path = usePathname();
 
   // ─── Search ───────────────────────────────────────────────
   const [searchTerm, setSearchTerm] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+
 
   // ─── Filter modal ─────────────────────────────────────────
   const [showFilter, setShowFilter] = useState(false);
@@ -45,7 +46,7 @@ const Hero_section = (params: {search: boolean; filter: boolean}) => {
 
     const handleKey = (e: KeyboardEvent) => e.key === 'Escape' && closeModal();
     const handleClick = (e: MouseEvent) =>
-      modalRef.current && !modalRef.current.contains(e.target as Node) && closeModal();
+    modalRef.current && !modalRef.current.contains(e.target as Node) && closeModal();
 
     window.addEventListener('keydown', handleKey);
     window.addEventListener('mousedown', handleClick);
@@ -55,16 +56,18 @@ const Hero_section = (params: {search: boolean; filter: boolean}) => {
     };
   }, [showFilter]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    setIsSearching(true); // 🔁 Begin search
+
     const params = new URLSearchParams();
     if (searchTerm) params.set('q', searchTerm.trim());
     if (selected.length) params.set('filter', selected.join(','));
 
     router.push(`?${params.toString()}`);
-    closeModal();
 
-    // 🔥 Emit global event for client components
+    // Emit filter-change for client components
     window.dispatchEvent(
       new CustomEvent('filter-change', {
         detail: {
@@ -73,6 +76,9 @@ const Hero_section = (params: {search: boolean; filter: boolean}) => {
         },
       })
     );
+
+    closeModal();
+    setIsSearching(false); // ✅ End search
   };
   
   return (
@@ -100,7 +106,18 @@ const Hero_section = (params: {search: boolean; filter: boolean}) => {
           {/* Clear button */}
           <button
             type="button"
-            onClick={() => setSearchTerm('')}
+            onClick={() => {
+              setSearchTerm('');
+              setSelected(filterOptions); // ✅ Reset filters
+              window.dispatchEvent(
+                new CustomEvent('filter-change', {
+                  detail: {
+                    searchTerm: '',
+                    filter: filterOptions,
+                  },
+                })
+              );
+            }}
             disabled={!searchTerm}
             className={`p-1 rounded hover-scale bg-black/50 transition-opacity cursor-pointer ${
               searchTerm ? 'opacity-100' : 'opacity-0 pointer-events-none'
@@ -109,10 +126,18 @@ const Hero_section = (params: {search: boolean; filter: boolean}) => {
             <X size={24} />
           </button>
 
+
           {/* Submit */}
-          <button type="submit" className="bg-black/50 p-1 rounded hover-scale cursor-pointer">
-            <Search size={24} />
+          <button
+            type="submit"
+            disabled={isSearching}
+            className={`bg-black/50 p-1 rounded hover-scale cursor-pointer transition-opacity ${
+              isSearching ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            <Search size={24} className={isSearching ? 'animate-spin' : ''} />
           </button>
+
 
           {/* Filter toggle */}
           {params.filter && (<button

@@ -9,7 +9,7 @@ body {
 }
 
 .nav-link {
-  @apply relative inline-flex items-center pb-1 transition-all duration-300;
+  @apply relative inline-flex items-center pb-1 transition-all duration-300 cursor-pointer;
 }
 
 .nav-link:hover {
@@ -51,6 +51,16 @@ body {
 }
 .hover-scale:active {
   transform: scale(0.95);
+}
+
+.hover-scale-low {
+  transition: all 0.2s ease-in-out;
+}
+.hover-scale-low:hover {
+  transform: scale(1.005);
+}
+.hover-scale-low:active {
+  transform: scale(0.995);
 }
 
 /* Scrollbar customization */

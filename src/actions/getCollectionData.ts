@@ -22,7 +22,7 @@ export async function getSingleTopicData(
       return { error: 'Unauthorized collection access', status: 403 };
     }
 
-    const db = await getDb();
+    const db = await getDb('r');
     const doc = await db.collection(collectionName).findOne({ slug: chosenTopic });
     console.log(`📄 Fetched topic document:`, doc);
 
@@ -62,7 +62,7 @@ export async function getScrollerCards(
       return { error: 'Unauthorized collection access', status: 403 };
     }
 
-    const db = await getDb();
+    const db = await getDb('r');
     const query: any = {};
 
     if (searchTerm) {
@@ -106,7 +106,7 @@ export async function getAllCards(
       return { error: 'Unauthorized collection access', status: 403 };
     }
 
-    const db = await getDb();
+    const db = await getDb('r');
 
     const rawData = await db.collection(collectionName)
       .find({}, {

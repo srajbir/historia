@@ -1,30 +1,76 @@
+// 'use server';
+// import { MongoClient, Db, MongoClientOptions } from 'mongodb';
+
+// let cachedClient: MongoClient | null = null;
+// let cachedDb: Db | null = null;
+
+// export async function getDb(access: 'r' | 'w'): Promise<Db> {
+//   if (cachedDb) return cachedDb;
+
+//   const uri = (access==='r' ? process.env.MONGODB_URI_R! : process.env.MONGODB_URI_W!);
+
+//     const opts: MongoClientOptions = {
+//     maxIdleTimeMS: 10_000,     // prune idle sockets
+//     serverSelectionTimeoutMS: 5_000, // fail fast on bad DNS / firewall
+//     connectTimeoutMS: 5_000,   // TCP handshake cap
+//     maxPoolSize: 50, // maintain up to 50 socket connections
+//     retryWrites: true, 
+//     writeConcern: { w: 'majority' },
+//     tls: true,
+//   };
+
+//   const client = cachedClient ?? new MongoClient(uri, opts);
+
+//   if (!cachedClient) {
+//     await client.connect();
+//     cachedClient = client;
+//   }
+
+//   cachedDb = client.db(process.env.MONGODB_DB || 'historia');
+//   return cachedDb;
+// }
+
 'use server';
+
 import { MongoClient, Db, MongoClientOptions } from 'mongodb';
 
 let cachedClient: MongoClient | null = null;
 let cachedDb: Db | null = null;
 
-export async function getDb(): Promise<Db> {
-  if (cachedDb) return cachedDb;
+export async function getDb(access: 'r' | 'w'): Promise<Db> {
+  const uri =
+    access === 'r'
+      ? process.env.MONGODB_URI_R!
+      : process.env.MONGODB_URI_W!;
 
-  const uri = process.env.MONGODB_URI!;
-
-    const opts: MongoClientOptions = {
-    maxIdleTimeMS: 10_000,     // prune idle sockets
-    serverSelectionTimeoutMS: 5_000, // fail fast on bad DNS / firewall
-    connectTimeoutMS: 5_000,   // TCP handshake cap
-    maxPoolSize: 50, // maintain up to 50 socket connections
-    retryWrites: true, 
+  const opts: MongoClientOptions = {
+    maxIdleTimeMS: 10_000,
+    serverSelectionTimeoutMS: 5_000,
+    connectTimeoutMS: 5_000,
+    maxPoolSize: 50,
+    retryWrites: true,
     writeConcern: { w: 'majority' },
+    tls: true,
   };
 
-  const client = cachedClient ?? new MongoClient(uri, opts);
-
-  if (!cachedClient) {
-    await client.connect();
-    cachedClient = client;
+  if (cachedClient && cachedDb) {
+    try {
+      // Ping to check if connection is still valid
+      await cachedDb.command({ ping: 1 });
+      return cachedDb;
+    } catch (err) {
+      console.warn('Stale MongoDB connection detected, reconnecting...');
+      await cachedClient.close(); // close stale client
+      cachedClient = null;
+      cachedDb = null;
+    }
   }
 
+  const client = new MongoClient(uri, opts);
+  await client.connect();
+  cachedClient = client;
   cachedDb = client.db(process.env.MONGODB_DB || 'historia');
+
   return cachedDb;
 }
+

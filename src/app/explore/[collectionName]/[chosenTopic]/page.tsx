@@ -29,42 +29,89 @@ export default async function TopicPage({
   topicName = doc.name;
 
   return (
-    <>
-      <Hero_section flag={false}/>
-      <div className="p-6 max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4">{doc.name}</h1>
-        {1 && (
-          <div className="relative w-full h-64 mb-6">
-            <Image
-              src={doc.image || '/image.jpg'}
-              alt={doc.name}
-              fill
-              className="object-cover rounded-xl shadow-md"
+  <>
+    <Hero_section search={false} />
+
+    <section className="my-5 shadow bg-white/70 backdrop-blur-md rounded dark:bg-[#1f1f1f99] text-gray-700 dark:text-gray-300">
+      <div className="px-3 py-8 max-w-7xl mx-auto">
+
+        {/* Title - Always at the top, centered */}
+        <h1 className="lg:text-3xl text-2xl font-bold mb-6 text-black dark:text-white text-center">
+          {doc.name}
+        </h1>
+
+        {/* Grid Layout for Image + Info (responsive) */}
+        <div className="flex flex-col md:flex-row md:items-start md:gap-8">
+
+          {/* Image - center on mobile, left on md+ */}
+          {doc.image && ( 
+            <div className="w-full md:w-3/4 max-w-3xl mb-6 md:mb-0 mx-auto md:mx-0 overflow-hidden rounded shadow hover:shadow-md transition-all duration-300">
+              <Image
+                src={doc.image}
+                alt={doc.name}
+                width={800}
+                height={0}
+                className="w-full h-auto rounded transition-transform duration-1000 hover:scale-105 object-contain"
               />
+            </div>
+          )}
+
+          {/* Metadata */}
+          <div className="grid grid-cols-1 gap-4 text-base md:w-1/4 max-w-xl">
+            {doc.era && (
+              <div>
+                <strong>Era:</strong> {doc.era}
+              </div>
+            )}
+            {doc.founder && (
+              <div>
+                <strong>Founder:</strong> {doc.founder}
+              </div>
+            )}
+            {doc.dynasty && (
+              <div>
+                <strong>Dynasty:</strong> {doc.dynasty}
+              </div>
+            )}
+            {doc.location && (
+              <div>
+                <strong>Location:</strong> {doc.location}
+              </div>
+            )}
+            {doc.date && (
+              <div>
+                <strong>Date:</strong> {doc.date}
+              </div>
+            )}
+            {doc.role && (
+              <div>
+                <strong>Role:</strong> {doc.role}
+              </div>
+            )}
+            {doc.start_year != null && (
+              <div>
+                <strong>Start Year:</strong> {doc.start_year}
+              </div>
+            )}
+            {doc.end_year != null && (
+              <div>
+                <strong>End Year:</strong> {doc.end_year}
+              </div>
+            )}
           </div>
-        )}
+        </div>
+          
+        {/* Description - below image/info block */}
         {doc.description && (
-          <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
+          <p className="text-lg mt-6 text-justify">
             {doc.description}
           </p>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-base text-gray-600 dark:text-gray-300">
-          {doc.era && <div><strong>Era:</strong> {doc.era}</div>}
-          {doc.founder && <div><strong>Founder:</strong> {doc.founder}</div>}
-          {doc.dynasty && <div><strong>Dynasty:</strong> {doc.dynasty}</div>}
-          {doc.location && <div><strong>Location:</strong> {doc.location}</div>}
-          {doc.date && <div><strong>Date:</strong> {doc.date}</div>}
-          {doc.role && <div><strong>Role:</strong> {doc.role}</div>}
-          {doc.start_year != null && (
-            <div><strong>Start Year:</strong> {doc.start_year}</div>
-          )}
-          {doc.end_year != null && (
-            <div><strong>End Year:</strong> {doc.end_year}</div>
-          )}
-        </div>
       </div>
-    </>
-  );
+    </section>
+  </>
+);
+
 }
 
 export async function generateMetadata({
