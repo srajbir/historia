@@ -82,7 +82,7 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
             filteredData.map((item, index) => (
               <Card
                 key={index}
-                image={item.image}
+                image={item.image || '/image.jpg'}
                 name={item.name}
                 slug={item.slug}
                 collection={collectionName}

@@ -1,7 +1,12 @@
+import { Loader2 } from "lucide-react";
+
 export default function Loading() {
   return (
-    <div className="flex flex-col p-3 py-8 my-5 shadow bg-white/70 backdrop-blur-md rounded dark:bg-[#1f1f1f99] text-black dark:text-white mx-auto items-center justify-center h-3/4">
-      <h1 className="text-2xl font-bold mb-4">Loading...</h1>
-    </div>
+    <section className="flex items-center justify-center min-h-[500px] w-full px-4 my-6 shadow rounded bg-white/70 dark:bg-[#1f1f1f99] backdrop-blur-md text-black dark:text-white ">
+      <div className="flex flex-col items-center justify-center p-6 w-full max-w-md">
+        <Loader2 size={36} className="animate-spin mb-4 text-[#273b7a] dark:text-[#5a78f0]" />
+        <h1 className="text-xl font-semibold">Loading...</h1>
+      </div>
+    </section>
   );
 }

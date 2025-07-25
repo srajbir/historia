@@ -5,7 +5,7 @@ import { Users, Lightbulb, Globe, Layers, Code2, LayoutDashboard, Wrench, Star }
 
 const page = () => {
   return (
-    <main className="w-full my-5 space-y-5">
+    <main className="w-full my-6 space-y-5">
 
         <section className="space-y-10 bg-white/60 dark:bg-[#1f1f1f99] rounded shadow p-6">
 

@@ -114,7 +114,7 @@ const ExploreScroller = (params: ScrollerProp) => {
 
   // ─── Component Return ─────────────────────────────────────────────
   return (
-    <section className="p-3 py-8 my-5 shadow bg-white/70 backdrop-blur-md rounded dark:bg-[#1f1f1f99] text-black dark:text-white mx-auto">
+    <section className="p-3 py-8 my-6 shadow bg-white/70 backdrop-blur-md rounded dark:bg-[#1f1f1f99] text-black dark:text-white mx-auto">
       <div className="max-w-7xl mx-auto">
         <h2
           className="px-1 text-2xl lg:text-3xl font-bold mb-4 nav-link cursor-pointer"

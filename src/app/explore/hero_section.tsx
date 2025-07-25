@@ -82,7 +82,7 @@ const Hero_section = (params: {search: boolean; filter?: boolean}) => {
   };
   
   return (
-    <section className="overflow-hidden rounded shadow backdrop-blur-lg my-5 w-full h-48 md:h-72 lg:h-96 relative">
+    <section className="overflow-hidden rounded shadow backdrop-blur-lg my-6 w-full h-48 md:h-72 lg:h-96 relative">
       {/* Scrolling background image */}
       <div className="explore-bg pointer-events-none select-none" />
 
