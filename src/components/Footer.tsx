@@ -16,7 +16,9 @@ export default function Footer() {
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 font-bold text-2xl">
                         <Image src="./logo1.svg" alt="Historia" width={32} height={32} />
-                        <span>HISTORIA</span>
+                        <Link href="/">
+                            <span>HISTORIA</span>
+                        </Link>
                     </div>
                     <p className="text-base leading-snug text-gray-700 dark:text-gray-300">
                         Learn the Legends, Events, Places and History of the World.

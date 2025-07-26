@@ -3,6 +3,7 @@
 import { getDb } from '@/lib/mongodb';
 import { slugify } from '@/lib/utils';
 import { Props, allowedCollections, ErrorResult, CardProps } from '@/lib/types';
+import { getWikiImage } from '@/lib/wikiImage';
 
 function isValidCollection(name: string): boolean {
   return allowedCollections.includes(name);
@@ -12,7 +13,28 @@ function escapeRegex(input: string): string {
   return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-// Get a single topic by slug
+// Helper to safely assign image
+async function safeImage(name: string, dbImage?: string): Promise<string> {
+  // 1. Try fetching with dbImage (as a wiki title/slug), if it's provided
+  if (dbImage && dbImage.trim() !== '') {
+    const fetchedFromSlug = await getWikiImage(dbImage);
+    if (fetchedFromSlug && fetchedFromSlug.trim() !== '') {
+      return fetchedFromSlug;
+    }
+  }
+
+  // 2. Fallback: Try fetching with the name
+  const fetchedFromName = await getWikiImage(name);
+  if (fetchedFromName && fetchedFromName.trim() !== '') {
+    return fetchedFromName;
+  }
+
+  // 3. Default fallback image
+  return '/image.jpg';
+}
+
+
+// 🔍 Get a single topic by slug
 export async function getSingleTopicData(
   collectionName: string,
   chosenTopic: string
@@ -24,7 +46,6 @@ export async function getSingleTopicData(
 
     const db = await getDb('r');
     const doc = await db.collection(collectionName).findOne({ slug: chosenTopic });
-    console.log(`📄 Fetched topic document:`, doc);
 
     if (!doc) {
       return { error: 'Topic not found', status: 404 };
@@ -33,9 +54,10 @@ export async function getSingleTopicData(
     const result: Props = {
       id: doc._id.toString(),
       name: doc.name,
-      image: doc.image,
+      image: await safeImage(doc.name, doc.image),
       description: doc.description,
       era: doc.era ?? null,
+      slug: doc.slug ?? null,
       founder: doc.founder ?? null,
       start_year: doc.start_year ?? null,
       end_year: doc.end_year ?? null,
@@ -52,7 +74,7 @@ export async function getSingleTopicData(
   }
 }
 
-// Get cards with optional search
+// 🌀 Get cards with optional search
 export async function getScrollerCards(
   collectionName: string,
   searchTerm?: string
@@ -74,21 +96,18 @@ export async function getScrollerCards(
     }
 
     const rawData = await db.collection(collectionName)
-      .find(query, {
-        projection: {
-          name: 1,
-          image: 1,
-          slug: 1,
-        },
-      })
+      .find(query, { projection: { name: 1, image: 1, slug: 1 } })
+      .limit(5)
       .toArray();
 
-    const data: CardProps[] = rawData.map((doc) => ({
-      id: doc._id.toString(),
-      name: doc.name,
-      image: doc.image || '/image.jpg',
-      slug: doc.slug ?? slugify(doc.name),
-    }));
+    const data: CardProps[] = await Promise.all(
+      rawData.map(async (doc) => ({
+        id: doc._id.toString(),
+        name: doc.name,
+        image: await safeImage(doc.name, doc.image),
+        slug: doc.slug ?? slugify(doc.name),
+      }))
+    );
 
     return data;
   } catch (err: any) {
@@ -97,7 +116,7 @@ export async function getScrollerCards(
   }
 }
 
-// Get all cards from a collection
+// 📚 Get all cards from a collection
 export async function getAllCards(
   collectionName: string
 ): Promise<CardProps[] | ErrorResult> {
@@ -109,21 +128,17 @@ export async function getAllCards(
     const db = await getDb('r');
 
     const rawData = await db.collection(collectionName)
-      .find({}, {
-        projection: {
-          name: 1,
-          image: 1,
-          slug: 1,
-        },
-      })
+      .find({}, { projection: { name: 1, image: 1, slug: 1 } })
       .toArray();
 
-    const data: CardProps[] = rawData.map((doc) => ({
-      id: doc._id.toString(),
-      name: doc.name,
-      image: doc.image || '/image.jpg',
-      slug: doc.slug ?? slugify(doc.name),
-    }));
+    const data: CardProps[] = await Promise.all(
+      rawData.map(async (doc) => ({
+        id: doc._id.toString(),
+        name: doc.name,
+        image: await safeImage(doc.name, doc.image),
+        slug: doc.slug ?? slugify(doc.name),
+      }))
+    );
 
     return data;
   } catch (err: any) {

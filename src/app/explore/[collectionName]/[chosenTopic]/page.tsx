@@ -45,7 +45,7 @@ export default async function TopicPage({
           {doc.image && ( 
             <div className="w-full md:w-3/4 max-w-3xl mb-6 md:mb-0 mx-auto md:mx-0 overflow-hidden rounded shadow hover:shadow-md transition-all duration-300">
               <Image
-                src={doc.image || '/image.jpg'}
+                src={doc.image}
                 alt={doc.name}
                 width={800}
                 height={0}

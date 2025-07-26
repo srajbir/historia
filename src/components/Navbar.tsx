@@ -31,7 +31,9 @@ export default function Navbar() {
       {/* Logo */}
       <div className="inline-flex flex-row items-center gap-2 font-bold text-2xl">
         <Image src="/logo1.svg" alt="Historia" width={32} height={32} />
-        <h1>HISTORIA</h1>
+        <Link href="/">
+          <h1>HISTORIA</h1>
+        </Link>
       </div>
 
       {/* Navigation Links */}
