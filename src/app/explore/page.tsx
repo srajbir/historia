@@ -1,6 +1,6 @@
-import ExploreScroller from "./explore_scroller";
+import ExploreScroller from "../../components/explore_scroller";
 import { allowedCollections as collections } from '@/lib/types';
-import Hero_section from "./hero_section";
+import Hero_section from "../../components/hero_section";
 const page = () => {
 
   return (

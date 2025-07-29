@@ -42,6 +42,22 @@ body {
   50% { background-position: -100% 0; }
 }
 
+@keyframes fadeInZoom {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.landing-ani {
+  opacity: 1 !important;
+  animation: fadeInZoom 0.8s ease-out forwards;
+}
+
 /* Custom hover scale for icons and buttons */
 .hover-scale {
   transition: all 0.2s ease-in-out;

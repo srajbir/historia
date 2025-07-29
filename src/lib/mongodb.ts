@@ -2,8 +2,15 @@
 
 import { MongoClient, Db, MongoClientOptions } from 'mongodb';
 
-let cachedClient: MongoClient | null = null;
-let cachedDb: Db | null = null;
+let cachedClients: { r: MongoClient | null; w: MongoClient | null } = {
+  r: null,
+  w: null,
+};
+
+let cachedDbs: { r: Db | null; w: Db | null } = {
+  r: null,
+  w: null,
+};
 
 export async function getDb(access: 'r' | 'w'): Promise<Db> {
   const uri =
@@ -21,24 +28,28 @@ export async function getDb(access: 'r' | 'w'): Promise<Db> {
     tls: true,
   };
 
-  if (cachedClient && cachedDb) {
+  // Use separate cache for read and write
+  let client = cachedClients[access];
+  let db = cachedDbs[access];
+
+  if (client && db) {
     try {
-      // Ping to check if connection is still valid
-      await cachedDb.command({ ping: 1 });
-      return cachedDb;
+      await db.command({ ping: 1 });
+      return db;
     } catch (err) {
-      console.warn('Stale MongoDB connection detected, reconnecting...');
-      await cachedClient.close(); // close stale client
-      cachedClient = null;
-      cachedDb = null;
+      console.warn(`Stale MongoDB ${access === 'r' ? 'read' : 'write'} connection detected, reconnecting...`);
+      await client.close();
+      cachedClients[access] = null;
+      cachedDbs[access] = null;
     }
   }
 
-  const client = new MongoClient(uri, opts);
+  client = new MongoClient(uri, opts);
   await client.connect();
-  cachedClient = client;
-  cachedDb = client.db(process.env.MONGODB_DB || 'historia');
+  db = client.db(process.env.MONGODB_DB || 'historia');
 
-  return cachedDb;
+  cachedClients[access] = client;
+  cachedDbs[access] = db;
+
+  return db;
 }
-

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getScrollerCards } from "../../actions/getCollectionData";
+import { getScrollerCards } from "../actions/getCollectionData";
 import { CardProps } from "@/lib/types";
 import Card from "@/components/Card";
 import { Skeleton } from "@/components/ui/skeleton";

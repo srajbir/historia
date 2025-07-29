@@ -4,9 +4,10 @@ import { getAllCards } from "@/actions/getCollectionData";
 import { notFound } from "next/navigation";
 import { CardProps, allowedCollections } from "@/lib/types";
 import { useEffect, useState, use } from "react";
-import Hero_section from "../hero_section";
+import Hero_section from "../../../components/hero_section";
 import Card from "@/components/Card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { capitalize } from "@/lib/utils";
 
 export default function CollectionPage({ params }: { params: Promise<{ collectionName: string }> }) {
   const { collectionName } = use(params);
@@ -52,8 +53,6 @@ export default function CollectionPage({ params }: { params: Promise<{ collectio
       window.removeEventListener('filter-change', handleFilterChange as EventListener);
     };
   }, [allData]);
-
-  const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
   // ✅ Skeleton Card UI
   const SkeletonCard = () => (

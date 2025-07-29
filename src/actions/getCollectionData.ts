@@ -146,3 +146,45 @@ export async function getAllCards(
     return { error: 'Internal server error', status: 500 };
   }
 }
+
+
+export async function getFirstTopicFromCollection(
+  collectionName: string
+): Promise<Props | ErrorResult> {
+  try {
+    if (!isValidCollection(collectionName)) {
+      return { error: 'Unauthorized collection access', status: 403 };
+    }
+
+    const db = await getDb('r');
+    // const doc = await db.collection(collectionName).findOne({});
+    const doc = await db.collection(collectionName)
+    .aggregate([{ $sample: { size: 1 } }])
+    .next();
+
+    if (!doc) {
+      return { error: 'No data found', status: 404 };
+    }
+
+    const result: Props = {
+      id: doc._id.toString(),
+      name: doc.name,
+      image: await safeImage(doc.name, doc.image),
+      description: doc.description,
+      era: doc.era ?? null,
+      slug: doc.slug ?? null,
+      founder: doc.founder ?? null,
+      start_year: doc.start_year ?? null,
+      end_year: doc.end_year ?? null,
+      location: doc.location ?? null,
+      dynasty: doc.dynasty ?? null,
+      date: doc.date ?? null,
+      role: doc.role ?? null,
+    };
+
+    return result;
+  } catch (err: any) {
+    console.error(`❌ [getFirstTopicFromCollection] Failed:`, err);
+    return { error: 'Internal server error', status: 500 };
+  }
+}

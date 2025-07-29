@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { allowedCollections } from "@/lib/types";
 import { getSingleTopicData } from "@/actions/getCollectionData";
 import { Metadata } from "next";
-import Hero_section from "../../hero_section";
-import ExploreScroller from "../../explore_scroller";
+import Hero_section from "../../../../components/hero_section";
+import ExploreScroller from "../../../../components/explore_scroller";
 
 export default async function TopicPage({
   params,
@@ -12,7 +12,7 @@ export default async function TopicPage({
   params: { collectionName: string; chosenTopic: string};
 }) {
   
-  const { collectionName, chosenTopic } = params;
+  const { collectionName, chosenTopic } =await params;
 
   if (!allowedCollections.includes(collectionName)) {
     notFound();
@@ -43,7 +43,7 @@ export default async function TopicPage({
 
           {/* Image - center on mobile, left on md+ */}
           {doc.image && ( 
-            <div className="w-full md:w-3/4 max-w-3xl mb-6 md:mb-0 mx-auto md:mx-0 overflow-hidden rounded shadow hover:shadow-md transition-all duration-300">
+            <div className="w-full md:w-3/4 max-w-2xl mb-6 md:mb-0 mx-auto md:mx-0 overflow-hidden rounded shadow hover:shadow-md transition-all duration-300">
               <Image
                 src={doc.image}
                 alt={doc.name}
@@ -88,12 +88,13 @@ export default async function TopicPage({
             )}
             {doc.start_year != null && (
               <div>
-                <strong>Start Year:</strong> {doc.start_year}
+                <strong>{collectionName === 'figures' ? 'Born' : 'Start Year'}:</strong> {doc.start_year}
               </div>
             )}
+
             {doc.end_year != null && (
               <div>
-                <strong>End Year:</strong> {doc.end_year}
+                <strong>{collectionName === 'figures' ? 'Died' : 'End Year'}:</strong> {doc.end_year}
               </div>
             )}
           </div>
@@ -119,7 +120,7 @@ export async function generateMetadata({
 }: {
   params: { collectionName: string; chosenTopic: string };
 }): Promise<Metadata> {
-  const { collectionName, chosenTopic } = params;
+  const { collectionName, chosenTopic } = await params;
   return {
     description: `Browse ${collectionName} - ${chosenTopic} in Historia's archive.`,
   };
