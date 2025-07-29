@@ -31,7 +31,7 @@ const LandingScrollerClient = ({ allData }: { allData: any[] }) => {
 
   return (
     <section className="w-full max-w-7xl mx-auto p-1" ref={containerRef}>
-      <h1 className="text-center text-2xl md:text-3xl lg:text-4xl font-bold text-[#273b7a] dark:text-[#5a78f0] py-4 drop-shadow-2xl">
+      <h1 className="text-center text-2xl md:text-3xl lg:text-4xl font-bold text-[#273b7a] dark:text-[#5a78f0] py-4 drop-shadow-2xl landing-item">
         Explore the Rich Tapestry of History
       </h1>
       {allData.map((doc, index) => {
