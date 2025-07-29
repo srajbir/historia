@@ -2,12 +2,12 @@
 
 import { MongoClient, Db, MongoClientOptions } from 'mongodb';
 
-let cachedClients: { r: MongoClient | null; w: MongoClient | null } = {
+const cachedClients: { r: MongoClient | null; w: MongoClient | null } = {
   r: null,
   w: null,
 };
 
-let cachedDbs: { r: Db | null; w: Db | null } = {
+const cachedDbs: { r: Db | null; w: Db | null } = {
   r: null,
   w: null,
 };

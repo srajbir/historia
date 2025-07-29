@@ -109,7 +109,7 @@ const page = () => {
           </h2>
           <p className="text-lg text-gray-700 dark:text-gray-300 lg:ml-12">
             Historia is just getting started! 🚀 In the future, we aim to integrate timeline visualizations,
-            mapping of historical events, multilingual support, and user profiles for saved content. We're
+            mapping of historical events, multilingual support, and user profiles for saved content. We&apos;re
             open to community contributions, ideas, and suggestions to keep improving the experience.
           </p>
         </div>

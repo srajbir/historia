@@ -68,7 +68,7 @@ export async function getSingleTopicData(
     };
 
     return result;
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(`❌ [getSingleTopicData] Failed to fetch topic:`, err);
     return { error: 'Internal server error', status: 500 };
   }
@@ -110,7 +110,7 @@ export async function getScrollerCards(
     );
 
     return data;
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(`❌ [getScrollerCards] Failed to fetch from ${collectionName}:`, err);
     return { error: 'Internal server error', status: 500 };
   }
@@ -141,7 +141,7 @@ export async function getAllCards(
     );
 
     return data;
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(`❌ [getAllCards] Failed to fetch from ${collectionName}:`, err);
     return { error: 'Internal server error', status: 500 };
   }
@@ -183,7 +183,7 @@ export async function getFirstTopicFromCollection(
     };
 
     return result;
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(`❌ [getFirstTopicFromCollection] Failed:`, err);
     return { error: 'Internal server error', status: 500 };
   }
